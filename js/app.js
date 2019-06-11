@@ -2,12 +2,12 @@
 
 var imageBank = [];
 
-function addImage(name, alt){
-    this.name = name;
-    if(name === "usb"){
-        this.filepath = 'img/' + name + '.gif';
+function addImage(title, alt){
+    this.title = title;
+    if(title === "usb"){
+        this.filepath = 'img/' + title + '.gif';
     } else{
-        this.filepath = 'img/' + name + '.jpg';
+        this.filepath = 'img/' + title + '.jpg';
     }
     this.alt = alt;
     this.views = 0;
@@ -59,31 +59,67 @@ function randomizeImage(){
             recentImages.shift();
         }
         recentImages.push(randomImage);
+        imageBank[randomImage].views++;
     }
 
     random();
     imageOne.src = imageBank[randomImage].filepath;
     imageOne.alt = imageBank[randomImage].alt;
-    imageOne.title = imageBank[randomImage].alt;
+    imageOne.title = imageBank[randomImage].title;
 
     random();
     imageTwo.src = imageBank[randomImage].filepath;
     imageTwo.alt = imageBank[randomImage].alt;
-    imageTwo.title = imageBank[randomImage].alt;
+    imageTwo.title = imageBank[randomImage].title;
 
     random();
     imageThree.src = imageBank[randomImage].filepath;
     imageThree.alt = imageBank[randomImage].alt;
-    imageThree.title = imageBank[randomImage].alt;
+    imageThree.title = imageBank[randomImage].title;
 }
 /* console.log(recentImages); */
 
-randomizeImage();
-
+var votesRemaining = 25;
 var imageContainer = document.getElementById('imageContainer');
+imageContainer.addEventListener('click', selector);
 
-imageContainer.addEventListener('click', randomizeImage);
+function selector(){
 
-// function selector(){
-//     randomizeImage();
-// }
+    var selected = event.target.title;
+
+    function winner(){
+    
+        var winningImage;
+        for(var i = 0; i < imageBank.length; i++){
+            var counter = 0;
+            if(imageBank[i].votes > counter){
+                counter = imageBank[i].votes;
+                winningImage = imageBank[i].title;
+            }
+        }
+    
+        var h2 = document.createElement('h2');
+        h2.textContent = "The item with the most votes is the " + winningImage + "!";
+        imageContainer.appendChild(h2);
+    }
+
+    if(votesRemaining === 0){
+        imageContainer.removeEventListener('click', selector);
+        imageContainer.innerHTML = "Thanks for voting! Here are your results:";
+        winner();
+    }
+
+    if(event.target.id === 'imageContainer'){
+        alert('Please click on one of the images.');
+    }
+
+    for(var i = 0; i < imageBank.length; i++){
+        if(selected === imageBank[i].title){
+            imageBank[i].votes++;
+            votesRemaining--;
+        }
+    }
+    randomizeImage();
+}
+
+randomizeImage();
