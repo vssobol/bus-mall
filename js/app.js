@@ -89,18 +89,49 @@ function selector(){
 
     function winner(){
     
-        var winningImage;
-        for(var i = 0; i < imageBank.length; i++){
+        var winningImages = [];
+
+        for(var j = 0; j < 6; j++){
             var counter = 0;
-            if(imageBank[i].votes > counter){
-                counter = imageBank[i].votes;
-                winningImage = imageBank[i].title;
+            for(var i = 0; i < imageBank.length; i++){
+                if(imageBank[i].votes > counter){
+                    counter = imageBank[i].votes;
+                    winningImages[j] = imageBank[i];
+                    imageBank.splice([i], 1);
+                }
             }
         }
-    
-        var h2 = document.createElement('h2');
-        h2.textContent = "The item with the most votes is the " + winningImage + "!";
-        imageContainer.appendChild(h2);
+        
+        var names = [];
+        var votes = [];
+
+        for(var i = 0; i < winningImages.length; i++){
+            names.push(winningImages[i].title);
+            votes.push(winningImages[i].votes);
+        }
+        
+        var ctx = document.getElementById('chart').getContext('2d');
+        
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+            labels: names,
+            datasets: [{
+                label: 'Votes for each image',
+                backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(99, 132, 255)',
+                'rgb(132, 255, 99)',
+                'rgb(255, 99, 255)',
+                'rgb(255, 255, 99)',
+                'rgb(99, 255, 255)',
+                ],
+                data: votes
+            }]
+            }
+        });
+        chart.canvas.parentNode.style.height = '500px';
+        chart.canvas.parentNode.style.width = '500px';
     }
 
     if(votesRemaining === 0){
