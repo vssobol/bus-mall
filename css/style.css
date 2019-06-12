@@ -1,0 +1,23 @@
+/* Color Palette: https://www.color-hex.com/color-palette/47893 */
+
+*{
+    border: thin dotted red;
+}
+
+h1{
+    text-align: center;
+}
+
+#imageContainer{
+    text-align: center;
+}
+
+img{
+    height: 500px;
+    width: 500px;
+    margin: 2em;
+}
+
+#chart{
+    width: 500px;
+}
