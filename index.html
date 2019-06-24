@@ -2,23 +2,42 @@
 <html>
     <head>
         <title>BusMall</title>
-        <!-- <link href="css/reset.css" type="text/css" rel="stylesheet"> -->
+        <link href="css/reset.css" type="text/css" rel="stylesheet">
         <link href="css/style.css" type="text/css" rel="stylesheet">
     </head>
     <body>
         <header>
-            <h1>BusMall</h1>
+            <img id="lili" src="https://file.toyhou.se/thumbnails/12945481_tP7.png" alt="Cat Loaf" title="Cat Loaf">
+            <h1>Bus Mall Store</h1>
+            <nav>
+              <ul>
+                <li><a href="">Home</a></li>
+                <li><a href="">Cart</a></li>
+              </ul>
+            </nav>
         </header>
+
         <main>
-            <section id="imageContainer">
-                <img id="imageOne" src="" alt=" title=">
-                <img id="imageTwo" src="" alt=" title=">
-                <img id="imageThree" src="" alt=" title=">
+            <section>
+                <h1>Vote On Future Items</h1>
+                <section id="imageContainer">
+                    <img id="imageOne" src="" alt=" title=">
+                    <img id="imageTwo" src="" alt=" title=">
+                    <img id="imageThree" src="" alt=" title=">
+                </section>
+
+                <section id="chartContainer">
+                    <canvas id="chart"></canvas>
+                </section>
+                <h1>Shop Our Catalog</h1>
+                <section id="items"></section>
+                <ol>
+                    <li>Select an item from our catalog and indicate how many you would like to purchase</li>
+                    <li>Once you've made your selection, click the "Add to Cart" button</li>
+                    <li>When you are ready to purchase, click the "Cart" link above to view your cart and check out</li>
+                </ol>
             </section>
-            <br>
-            <section id="chartContainer">
-                <canvas id="chart" style="height: 500px;width: 500px;"></canvas>
-            </section>
+
         </main>
         <footer>
 

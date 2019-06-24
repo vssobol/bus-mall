@@ -1,6 +1,6 @@
 'use strict';
 
-var imageBank = [];
+var imageBank = localStorage.setItem('busmall', JSON.stringify(imageBank)) || [];
 
 function addImage(title, alt){
     this.title = title;
@@ -34,7 +34,13 @@ function addImage(title, alt){
      new addImage('usb', "moving tentacle thumb drive");
      new addImage('water-can', "watering can that waters itself");
      new addImage('wine-glass', "egg-shaped wine glass");
- /* console.log(imageBank); */ //test
+
+     if(localStorage.busmall !== "undefined"){
+        imageBank = JSON.parse(localStorage.getItem('busmall', imageBank));
+     } else{
+        localStorage.setItem('busmall', JSON.stringify(imageBank));
+     }
+/* console.log(imageBank); */
 
 function randomizer(min, max){
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -79,7 +85,16 @@ function randomizeImage(){
 }
 /* console.log(recentImages); */
 
-var votesRemaining = 25;
+
+var votesRemaining;
+if(localStorage.votes !== "undefined"){
+    votesRemaining = JSON.parse(localStorage.getItem('votes', votesRemaining));
+} else{
+    votesRemaining = localStorage.setItem('votes', votesRemaining);
+}
+localStorage.setItem('votes', JSON.stringify(25));
+
+
 var imageContainer = document.getElementById('imageContainer');
 imageContainer.addEventListener('click', selector);
 
@@ -90,53 +105,69 @@ function selector(){
     function winner(){
     
         var winningImages = [];
-
         for(var j = 0; j < 6; j++){
             var counter = 0;
             for(var i = 0; i < imageBank.length; i++){
-                if(imageBank[i].votes > counter){
-                    counter = imageBank[i].votes;
-                    winningImages[j] = imageBank[i];
+
+                if((imageBank[i].votes / imageBank[i].views) > counter){
+                    counter = imageBank[i];
+                    winningImages[j] = counter;
                     imageBank.splice([i], 1);
                 }
+
             }
         }
+        imageBank = JSON.parse(localStorage.getItem('busmall', imageBank));
         
         var names = [];
+        var views = [];
         var votes = [];
-
         for(var i = 0; i < winningImages.length; i++){
             names.push(winningImages[i].title);
+            views.push(winningImages[i].views);
             votes.push(winningImages[i].votes);
         }
+        votes.push(0);
         
         var ctx = document.getElementById('chart').getContext('2d');
         
-        var chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
+        var data = {
             labels: names,
             datasets: [{
-                label: 'Votes for each image',
+                label: "Votes",
                 backgroundColor: [
                 'rgb(255, 99, 132)',
                 'rgb(99, 132, 255)',
                 'rgb(132, 255, 99)',
                 'rgb(255, 99, 255)',
                 'rgb(255, 255, 99)',
-                'rgb(99, 255, 255)',
-                ],
+                'rgb(99, 255, 255)'],
                 data: votes
+            }, {
+                label: "Views",
+                backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(99, 132, 255)',
+                'rgb(132, 255, 99)',
+                'rgb(255, 99, 255)',
+                'rgb(255, 255, 99)',
+                'rgb(99, 255, 255)'],
+                data: views
             }]
+        };
+
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: {
+                barValueSpacing: 20
             }
         });
-        chart.canvas.parentNode.style.height = '500px';
-        chart.canvas.parentNode.style.width = '500px';
     }
 
-    if(votesRemaining === 0){
+    if(votesRemaining <= 0){
         imageContainer.removeEventListener('click', selector);
-        imageContainer.innerHTML = "Thanks for voting! Here are your results:";
+        imageContainer.innerHTML = '<p>' + "Thanks for voting! Here are your results:" + '</p>';
         winner();
     }
 
@@ -147,10 +178,26 @@ function selector(){
     for(var i = 0; i < imageBank.length; i++){
         if(selected === imageBank[i].title){
             imageBank[i].votes++;
+            localStorage.setItem('busmall', JSON.stringify(imageBank));
             votesRemaining--;
+            localStorage.setItem('votes', JSON.stringify(votesRemaining));
         }
     }
     randomizeImage();
 }
 
 randomizeImage();
+
+/* Create new element with images and append to col-2 */
+var sectionEl = document.getElementById('items');
+var divEl = document.createElement('div');
+for(var i = 0; i < imageBank.length; i++){
+  var imgEl = document.createElement('img');
+  imgEl.setAttribute('src', imageBank[i].filepath);
+  imgEl.setAttribute('alt', imageBank[i].alt);
+  imgEl.setAttribute('title', imageBank[i].title);
+  imgEl.setAttribute('height', 150);
+  imgEl.setAttribute('width', 150);
+  divEl.appendChild(imgEl);
+}
+sectionEl.appendChild(divEl);
